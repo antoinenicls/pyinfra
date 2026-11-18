@@ -14,6 +14,7 @@ def packages(
     packages: str | list[str] | None = None,
     remote: str | None = None,
     present=True,
+    purge=False,
 ):
     """
     Install/remove a flatpak package
@@ -21,7 +22,8 @@ def packages(
     + packages: List of packages
     + remote: Source to install the application or runtime from
     + present: whether the package should be installed
-
+    + purge : delete application data
+    
     **Examples:**
 
     .. code:: python
@@ -51,6 +53,7 @@ def packages(
             name="Remove vlc",
             packages="org.videolan.VLC",
             present=False,
+            purge=False,
         )
     """
 
@@ -94,6 +97,6 @@ def packages(
 
     if remove_packages:
         yield StringCommand(
-            "flatpak uninstall --noninteractive",
+           f"flatpak uninstall --noninteractive{' --delete-data' if purge else ''}",
             *[QuoteString(package) for package in remove_packages],
         )
